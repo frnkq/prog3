@@ -1,0 +1,4 @@
+crear -> post
+listar -> get
+delete -> borrar
+put -> modificar
