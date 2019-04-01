@@ -40,12 +40,14 @@ function ListarAlumno($legajo)
 {
   $fileName = "alumnos.json";
   $alumnos = GetAlumnosFromJson($fileName);
+  $found = false;
   foreach($alumnos as $alumno)
   {
-    if($alumno->legajo === $legajo)
+    if($alumno->legajo == $legajo)
     {
+      $found = true;
       return new Alumno($alumno->nombre, $alumno->edad, $alumno->dni, $alumno->legajo);
     }
-    return null;
   }
+  if(!$found) return null;
 }

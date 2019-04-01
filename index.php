@@ -5,8 +5,10 @@
 require_once 'funciones/CrearAlumno.php';
 require_once 'funciones/ListarAlumnos.php';
 require_once 'funciones/BorrarAlumno.php';
+require_once 'funciones/ModificarAlumno.php';
 
 $fileName = "alumnos.json";
+$legajo = null;
 
 if(isset($_POST['nombre']) &&
   isset($_POST['edad']) && isset($_POST['dni']) && isset($_POST['legajo']))
@@ -29,10 +31,10 @@ switch($_SERVER['REQUEST_METHOD'])
     break;
 
   case 'GET':
-    if(isset($_GET['legajo']))
+    if(!is_null($legajo))
     {
-      $legajo = $_GET['legajo'];
       $alumno = ListarAlumno($legajo);
+
       if(!is_null($alumno))
         echo ListarAlumno($legajo)->ToString();
       else
@@ -47,7 +49,10 @@ switch($_SERVER['REQUEST_METHOD'])
     break;
 
   case 'PUT':
-    var_dump($_REQUEST);
+    if(!is_null($legajo))
+    {
+      ModificarAlumno($legajo, $_GET);
+    }
     die();
     break;
 
