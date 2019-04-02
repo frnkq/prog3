@@ -1,11 +1,13 @@
 <?php
 require_once 'clases/Alumno.php';
+require_once 'helpers/ReturnResponse.php';
 
 function ModificarAlumno($legajo, $parameters)
 {
   $alumnos = array();
 
   $fileName = "alumnos.json";
+
   if(file_exists($fileName))
   {
     $alumnos = (array) json_decode(file_get_contents($fileName));
@@ -26,26 +28,19 @@ function ModificarAlumno($legajo, $parameters)
       $newAlumno = new Alumno($nombre, $edad, $dni, $legajo);
       $alumnosCopy[$key] = $newAlumno;
 
-      $result = array(
-        'Result' => "false",
-        'AlumnoOld' => $alumno,
-        'AlumnoNew' => $newAlumno
-      );
+      $result = ReturnResponse(true, null, array($alumno, $newAlumno));
       $found = true;
       break;
     }
 
     if(!$found)
     {
-      $result = array(
-        'Result' => "false",
-        'Alumno' => null
-      );
+      $result = ReturnResponse(false, "Alumno no encontrado", null);
     }
   }
 
-  echo json_encode($result);
   file_put_contents($fileName, json_encode($alumnosCopy));
 
+  echo $result;
   die();
 }

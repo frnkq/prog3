@@ -1,59 +1,50 @@
-<h1>Alumnos</h1>
-<hr>
 <?php
 
 require_once 'funciones/CrearAlumno.php';
 require_once 'funciones/ListarAlumnos.php';
 require_once 'funciones/BorrarAlumno.php';
 require_once 'funciones/ModificarAlumno.php';
+require_once 'helpers/ProcessRequest.php';
 
+$header = "<h1>Alumnos</h1><hr>";
 $fileName = "alumnos.json";
-$legajo = null;
 
-if(isset($_POST['nombre']) &&
-  isset($_POST['edad']) && isset($_POST['dni']) && isset($_POST['legajo']))
-{
-  $nombre = $_POST['nombre'];
-  $edad = $_POST['edad'];
-  $dni = $_POST['dni'];
-  $legajo = $_POST['legajo'];
-}
-
-if(isset($_GET['legajo']))
-{
-  $legajo = $_GET['legajo'];
-}
+$parameters = ProcessRequest();
 
 switch($_SERVER['REQUEST_METHOD'])
 {
   case 'POST':
-      CrearAlumno($nombre, $edad, $dni, $legajo);
+    $postParameters = $parameters["post"];
+    $alumno = CrearAlumno($postParameters["nombre"],
+      $postParameters["edad"], $postParameters["dni"],
+      $postParameters["legajo"], $postParameters["foto"]
+    );
     break;
 
   case 'GET':
-    if(!is_null($legajo))
+    echo $header;
+    if(!is_null($legajo = $parameters["get"]["legajo"]))
     {
-      $alumno = ListarAlumno($legajo);
-
-      if(!is_null($alumno))
-        echo ListarAlumno($legajo)->ToString();
+      if(!is_null($alumno = ListarAlumno($legajo)))
+      {
+        echo $alumno->ToString();
+      }
       else
+      {
         echo "Alumno no encontrado";
-      die();
+      }
     }
     else
     {
       echo ListarAlumnos();
-      die();
     }
     break;
 
   case 'PUT':
     if(!is_null($legajo))
     {
-      ModificarAlumno($legajo, $_GET);
+      ModificarAlumno($legajo, $parameters["get"]);
     }
-    die();
     break;
 
   case 'DELETE':
@@ -64,7 +55,6 @@ switch($_SERVER['REQUEST_METHOD'])
     break;
 
   default:
+    echo $header;
     echo "Method not allowed";
-    die();
 }
-die();

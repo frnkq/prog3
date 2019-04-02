@@ -1,5 +1,6 @@
 <?php
 require_once 'clases/Alumno.php';
+require_once 'helpers/ReturnResponse.php';
 
 function GetAlumnosFromJson($fileName)
 {
@@ -15,20 +16,19 @@ function ListarAlumnos()
 {
   $fileName = "alumnos.json";
   $returnString = "";
+
   $alumnos = GetAlumnosFromJson($fileName);
 
   if(!is_null($alumnos))
   {
       foreach($alumnos as $al)
       {
-        //$al = (Alumno) $alumno;
         $alumno = new Alumno($al->nombre, $al->edad, $al->dni, $al->legajo); 
         $returnString = $returnString.$alumno->ToString();
       }
 
       return $returnString;
   }
-
   else
   {
     return "No hay alumnos";
