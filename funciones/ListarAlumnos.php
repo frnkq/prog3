@@ -12,6 +12,7 @@ function GetAlumnosFromJson($fileName)
   }
   return $alumnos;
 }
+
 function ListarAlumnos()
 {
   $fileName = "alumnos.json";
@@ -23,7 +24,7 @@ function ListarAlumnos()
   {
       foreach($alumnos as $al)
       {
-        $alumno = new Alumno($al->nombre, $al->edad, $al->dni, $al->legajo); 
+        $alumno = new Alumno(json_decode(json_encode($al), true)); 
         $returnString = $returnString.$alumno->ToString();
       }
 

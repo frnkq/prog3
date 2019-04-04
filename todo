@@ -1,10 +1,18 @@
 watermark imagecopymerge()
-file get contents php://input -> put con json
 maxi gmaxn
 foto en modificarAlumno
+
 funcion distinta backup y subir foto
+archivo guardarfotos.php (funciones)
+
 listaralumnos devuelva array, una sola funcion $legajo = null o $legajo = smth
-archivo guardarfotos?
+listarlos en tabla
+
+
+revisar todas las respuestas usar bools en los metodos y devolver mediante el index
+
+crear alumno con $parameters
+
 
 carga array
 (a/b/m)
@@ -12,4 +20,5 @@ guarda array
 -----siempre
 
 guardar en tres formatos json, array json, o csv con "=>"
+(hacer estos tres parseos)
 atomizar mas

@@ -1,34 +1,36 @@
 <?php
+require_once 'helpers/AppConfig.php';
+require_once 'clases/AlumnoDAO.php';
 require_once 'clases/Alumno.php';
 require_once 'helpers/ReturnResponse.php';
 
-function ModificarAlumno($legajo, $parameters)
+function ModificarAlumno($alumnoToModify)
 {
-  $alumnos = array();
-
-  $fileName = "alumnos.json";
-
-  if(file_exists($fileName))
-  {
-    $alumnos = (array) json_decode(file_get_contents($fileName));
-  }
+  
+  $alumnoToModify = Alumno::StdToAlumno($alumnoToModify);
+  $alumnos = AlumnoDao::GetAlumnosFromJson(AppConfig::$alumnosJsonFileName);
 
   $alumnosCopy = $alumnos;
   $result = null;
   $found = false;
   foreach($alumnos as $key => $alumno)
   {
-    if($alumno->legajo == $legajo)
+    $alumno = Alumno::StdToAlumno($alumno);
+
+    if($alumno->legajo == $alumnoToModify->legajo)
     {
       $legajo = $alumno->legajo;
-      $nombre = (isset($parameters['nombre'])) ? $parameters['nombre'] : $alumno->nombre;
-      $edad = (isset($parameters['edad'])) ? $parameters['edad'] : $alumno->edad;
-      $dni = (isset($parameters['dni'])) ? $parameters['dni'] : $alumno->dni;
-
-      $newAlumno = new Alumno($nombre, $edad, $dni, $legajo);
+      $nombre = (!is_null($alumnoToModify->nombre)) ? $alumnoToModify->nombre : $alumno->nombre;
+      $edad = (!is_null($alumnoToModify->edad)) ? $alumnoToModify->edad : $alumno->edad;
+      $dni = (!is_null($alumnoToModify->dni)) ? $alumnoToModify->dni : $alumno->dni;
+      
+      $alumnoParameters = array("nombre" => $nombre, "edad" => $edad, "dni" => $dni, "legajo" => $legajo);
+  
+      $newAlumno = new Alumno($alumnoParameters);
+     
       $alumnosCopy[$key] = $newAlumno;
 
-      $result = ReturnResponse(true, null, array($alumno, $newAlumno));
+      $result = ReturnResponse(true, null, array("OldAlumno" => $alumno, "NewAlumno" => $newAlumno));
       $found = true;
       break;
     }
@@ -39,7 +41,7 @@ function ModificarAlumno($legajo, $parameters)
     }
   }
 
-  file_put_contents($fileName, json_encode($alumnosCopy));
+  file_put_contents(AppConfig::$alumnosJsonFileName, json_encode($alumnosCopy));
 
   echo $result;
   die();

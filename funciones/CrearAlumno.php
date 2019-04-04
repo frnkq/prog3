@@ -1,36 +1,37 @@
 <?php
-require_once 'clases/Alumno.php';
+require_once 'helpers/AppConfig.php';
 require_once 'helpers/ReturnResponse.php';
+
+require_once 'clases/Alumno.php';
+require_once 'clases/AlumnoDAO.php';
 
 function CrearAlumno($nombre, $edad, $dni, $legajo, $foto)
 {
-  $fileName = "alumnos.json";
-  $alumnos = array();
+  $fileName = AppConfig::$alumnosJsonFileName;
+  $alumnos = AlumnoDao::GetAlumnosFromJson(AppConfig::$alumnosJsonFileName);
 
   $alumno = new Alumno($nombre, $edad, $dni, $legajo);
   $alumno->foto = ProcessFoto($foto, $nombre,$legajo);
-
-
-  if(file_exists($fileName))
-  {
-    $alumnos = (array) json_decode(file_get_contents($fileName));
-  }
-
+  $failed = false;
   foreach($alumnos as $al)
   {
     if($al->legajo === $legajo)
     {
-      echo ReturnResponse(false, "Un alumno con ese legajo ya existe", null);
-      die();
+      $failed = true;
     }
-
   }
+  if(!$failed)
+  {
+    array_push($alumnos, $alumno);
+    file_put_contents($fileName, json_encode($alumnos));
+    echo ReturnResponse(true, null, $alumno);
+    return $alumno;
+  }
+  else
+  {
+    echo ReturnResponse(false, "Un alumno con ese legajo ya existe", null);
 
-  array_push($alumnos, $alumno);
-  file_put_contents($fileName, json_encode($alumnos));
-
-  echo ReturnResponse(true, null, $alumno);
-  return $alumno;
+  }  
 }
 
 function ProcessFoto($foto, $nombre, $legajo)

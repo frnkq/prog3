@@ -1,23 +1,23 @@
 <?php
+require_once 'helpers/AppConfig.php';
+require_once 'clases/AlumnoDAO.php';
 require_once 'clases/Alumno.php';
 require_once 'helpers/ReturnResponse.php';
 
-function BorrarAlumno($legajo)
+function BorrarAlumno($alumnoToDelete)
 {
-  $fileName = "alumnos.json";
-  $alumnos = array();
-  $result = null;
 
-  if(file_exists($fileName))
-  {
-    $alumnos = (array) json_decode(file_get_contents($fileName));
-  }
-
+  $alumnoToDelete = Alumno::StdToAlumno($alumnoToDelete);
+  $alumnos = AlumnoDao::GetAlumnosFromJson(AppConfig::$alumnosJsonFileName);
   $alumnosCopy = $alumnos;
+
+  $result = null;
 
   foreach($alumnos as $key => $alumno)
   {
-    if($alumno->legajo === $legajo)
+    $alumno = Alumno::StdToAlumno($alumno);
+    
+    if($alumno->legajo === $alumnoToDelete->legajo)
     {
       unset($alumnosCopy[$key]);
       $result = ReturnResponse(true, null, $alumno);
@@ -30,5 +30,5 @@ function BorrarAlumno($legajo)
   }
 
   echo $result;
-  file_put_contents($fileName, json_encode($alumnosCopy));
+  file_put_contents(AppConfig::$alumnosJsonFileName, json_encode($alumnosCopy));
 }
