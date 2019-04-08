@@ -1,6 +1,5 @@
 <?php
 
-
 include_once 'Persona.php';
 
 class Alumno extends Persona
@@ -16,11 +15,11 @@ class Alumno extends Persona
       $dni = array_key_exists("dni", $parameters) ? $parameters["dni"] : 0;
       $apellido = array_key_exists("apellido", $parameters) ? $parameters["apellido"] : "nosurname";
       $legajo = array_key_exists("legajo", $parameters) ? $parameters["legajo"] : 0;
-     
+
       parent::__construct($nombre, $edad, $dni, $apellido);
-     
+
       $this->legajo = $legajo;
-      
+
       if(array_key_exists("foto", $parameters))
         $this->foto = $parameters["foto"];
     }

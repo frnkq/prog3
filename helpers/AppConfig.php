@@ -1,5 +1,9 @@
 <?php
+
 class AppConfig
 {
-    public static $alumnosJsonFileName = "alumnos.json";
+  public static $alumnosJsonFileName = "alumnos.json";
+  public static $profilePicturesDir = "fotos";
+  public static $profilePicturesBackupDir = "fotosBackup";
+
 }

@@ -15,10 +15,7 @@ switch($_SERVER['REQUEST_METHOD'])
 {
   case 'POST':
     $postParameters = $parameters["post"];
-    $alumno = CrearAlumno($postParameters["nombre"],
-      $postParameters["edad"], $postParameters["dni"],
-      $postParameters["legajo"], $postParameters["foto"]
-    );
+    $alumno = CrearAlumno($postParameters);
     break;
 
   case 'GET':

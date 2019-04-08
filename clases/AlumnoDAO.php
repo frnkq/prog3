@@ -1,4 +1,6 @@
 <?php
+require_once 'helpers/AppConfig.php';
+
 class AlumnoDao
 {
     public static function GetAlumnosFromJson($fileName)
@@ -14,7 +16,7 @@ class AlumnoDao
     public static function GetAlumnoFromJson($fileName, $legajo)
     {
         $alumnos = GetAlumnosFromJson($fileName);
-        
+
         foreach($alumnos as $alumno)
         {
             if($alumno->legajo == $legajo)
@@ -23,5 +25,31 @@ class AlumnoDao
             }
         }
         return null;
+    }
+
+    public static function SaveAlumno($alumno, $fileName)
+    {
+      if(is_null($alumnos = self::GetAlumnosFromJson(AppConfig::$alumnosJsonFileName)))
+      {
+        $alumnos = array();
+      }
+
+      if(is_null(self::GetAlumnoFromJson($fileName, $alumno->legajo)))
+      {
+        array_push($alumnos, $alumno);
+      }
+      else
+      {
+        echo "ya existe";
+        return false;
+      }
+
+      return self::SaveAlumnos($fileName, $alumnos);
+    }
+
+    public static function SaveAlumnos($fileName, $alumnos)
+    {
+      file_put_contents($fileName, json_encode($alumnos));
+      return true;
     }
 }
