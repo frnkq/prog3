@@ -1,5 +1,6 @@
 <?php
 require_once 'helpers/AppConfig.php';
+require_once 'clases/Alumno.php';
 
 class AlumnoDao
 {
@@ -15,10 +16,11 @@ class AlumnoDao
 
     public static function GetAlumnoFromJson($fileName, $legajo)
     {
-        $alumnos = GetAlumnosFromJson($fileName);
+        $alumnos = self::GetAlumnosFromJson($fileName);
 
         foreach($alumnos as $alumno)
         {
+            $alumno = Alumno::StdToAlumno($alumno);
             if($alumno->legajo == $legajo)
             {
                 return $alumno;

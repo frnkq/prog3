@@ -24,7 +24,7 @@ switch($_SERVER['REQUEST_METHOD'])
     {
       if(!is_null($alumno = ListarAlumno($legajo)))
       {
-        echo $alumno->ToString();
+        ListarAlumno($legajo);
       }
       else
       {

@@ -5,7 +5,7 @@ class DecodifyJson
     {
         if(!DecodifyJson::isJson($_SERVER['CONTENT_TYPE']))
             return null;
-            
+
         //Attempt to decode the incoming RAW post data from JSON.
         $arrayObjetos = json_decode($content, true);
 
@@ -15,7 +15,7 @@ class DecodifyJson
             return null;
             //throw new Exception('Received content contained invalid JSON!');
         }
-        
+
         return $arrayObjetos;
     }
 

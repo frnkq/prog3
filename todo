@@ -1,15 +1,11 @@
 maxi gmaxn
-foto en modificarAlumno
 
-funcion distinta backup y subir foto
 
 listaralumnos devuelva array, una sola funcion $legajo = null o $legajo = smth
 listarlos en tabla
 
 
 revisar todas las respuestas usar bools en los metodos y devolver mediante el index
-
-
 
 carga array
 (a/b/m)

@@ -25,18 +25,39 @@ class Alumno extends Persona
     }
   }
 
+
+  public static function CreateHTMLTable($content)
+  {
+    $tableHeader = "<table border='1px'><thead>";
+    $tableHeader .= "<tr>";
+    $tableHeader .= "<td>Legajo</td>";
+    $tableHeader .= "<td>Nombre</td>";
+    $tableHeader .= "<td>Apellido</td>";
+    $tableHeader .= "<td>Edad</td>";
+    $tableHeader .= "<td>DNI</td>";
+    $tableHeader .= "<td>Foto</td>";
+    $tableContent = $content;
+    $tableFooter = "</table>";
+
+    $table = $tableHeader.$tableContent.$tableFooter;
+    return $table;
+  }
+
   public function ToString()
   {
-    return
-      "
-        <ul>
-          <li>Nombre: ".$this->nombre."</li>
-          <li>Edad: ".$this->edad."</li>
-          <li>Dni: ".$this->dni."</li>
-          <li>Legajo: ".$this->legajo."</li>
-        </ul>
-      ";
+    $tableRow = "<tr>";
+    $tableRow .="<td>$this->legajo</td>";
+    $tableRow .="<td>$this->nombre</td>";
+    $tableRow .="<td>$this->edad</td>";
+    $tableRow .="<td>$this->apellido</td>";
+    $tableRow .="<td>$this->dni</td>";
+    if(!is_null($this->foto))
+    {
+      $tableRow .="<td><img src='$this->foto' height='48' width='48' alt='ProfilePicture'/></td>";
+    }
+    return $tableRow;
   }
+
   public static function PrintAlumno($alumno)
   {
     return

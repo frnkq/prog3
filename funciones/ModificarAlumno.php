@@ -1,12 +1,13 @@
 <?php
 require_once 'helpers/AppConfig.php';
+require_once 'helpers/ReturnResponse.php';
+require_once 'helpers/PicturesProcessor.php';
+
 require_once 'clases/AlumnoDAO.php';
 require_once 'clases/Alumno.php';
-require_once 'helpers/ReturnResponse.php';
 
 function ModificarAlumno($alumnoToModify)
 {
-  
   $alumnoToModify = Alumno::StdToAlumno($alumnoToModify);
   $alumnos = AlumnoDao::GetAlumnosFromJson(AppConfig::$alumnosJsonFileName);
 
@@ -23,11 +24,11 @@ function ModificarAlumno($alumnoToModify)
       $nombre = (!is_null($alumnoToModify->nombre)) ? $alumnoToModify->nombre : $alumno->nombre;
       $edad = (!is_null($alumnoToModify->edad)) ? $alumnoToModify->edad : $alumno->edad;
       $dni = (!is_null($alumnoToModify->dni)) ? $alumnoToModify->dni : $alumno->dni;
-      
+
       $alumnoParameters = array("nombre" => $nombre, "edad" => $edad, "dni" => $dni, "legajo" => $legajo);
-  
+
       $newAlumno = new Alumno($alumnoParameters);
-     
+
       $alumnosCopy[$key] = $newAlumno;
 
       $result = ReturnResponse(true, null, array("OldAlumno" => $alumno, "NewAlumno" => $newAlumno));
@@ -42,7 +43,5 @@ function ModificarAlumno($alumnoToModify)
   }
 
   file_put_contents(AppConfig::$alumnosJsonFileName, json_encode($alumnosCopy));
-
   echo $result;
-  die();
 }
