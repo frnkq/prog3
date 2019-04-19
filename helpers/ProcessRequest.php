@@ -21,6 +21,7 @@ function ProcessRequest()
     $post["dni"] = isset($_POST['dni']) ? $_POST['dni'] : null;
     $post["legajo"] = isset($_POST['legajo']) ? $_POST['legajo'] : null;
     $post["foto"] = isset($_FILES['foto']) ? $_FILES['foto'] : null;
+    $post["apellido"] = isset($_POST['apellido']) ? $_POST['apellido'] : null;
   }
 
   return array("get" => $get, "post" => $post);

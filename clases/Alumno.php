@@ -5,8 +5,27 @@ include_once 'Persona.php';
 class Alumno extends Persona
 {
   public $legajo;
+  public $foto;
+  //function __construct($parameters)
+  //{
+  //  if($parameters != null)
+  //  {
+  //    $nombre = array_key_exists("nombre", $parameters) ? $parameters["nombre"] : "noname";
+  //    $edad = array_key_exists("edad", $parameters) ? $parameters["edad"] : 0;
+  //    $dni = array_key_exists("dni", $parameters) ? $parameters["dni"] : 0;
+  //    $apellido = array_key_exists("apellido", $parameters) ? $parameters["apellido"] : "nosurname";
+  //    $legajo = array_key_exists("legajo", $parameters) ? $parameters["legajo"] : 0;
 
-  function __construct($parameters)
+  //    parent::__construct($nombre, $edad, $dni, $apellido);
+
+  //    $this->legajo = $legajo;
+
+  //    if(array_key_exists("foto", $parameters))
+  //      $this->foto = $parameters["foto"];
+  //  }
+  //}
+
+  public function SetParams($parameters)
   {
     if($parameters != null)
     {
@@ -16,16 +35,17 @@ class Alumno extends Persona
       $apellido = array_key_exists("apellido", $parameters) ? $parameters["apellido"] : "nosurname";
       $legajo = array_key_exists("legajo", $parameters) ? $parameters["legajo"] : 0;
 
-      parent::__construct($nombre, $edad, $dni, $apellido);
-
+      $this->nombre = $nombre;
+      $this->edad = $edad;
+      $this->dni = $dni;
+      $this->apellido = $apellido;
       $this->legajo = $legajo;
 
       if(array_key_exists("foto", $parameters))
         $this->foto = $parameters["foto"];
     }
+
   }
-
-
   public static function CreateHTMLTable($content)
   {
     $tableHeader = "<table border='1px'><thead>";
@@ -58,18 +78,6 @@ class Alumno extends Persona
     return $tableRow;
   }
 
-  public static function PrintAlumno($alumno)
-  {
-    return
-      "
-        <ul>
-          <li>Nombre: ".$alumno->nombre."</li>
-          <li>Edad: ".$alumno->edad."</li>
-          <li>Dni: ".$alumno->dni."</li>
-          <li>Legajo: ".$alumno->legajo."</li>
-        </ul>
-      ";
-  }
 
   public static function StdToAlumno($object)
   {
@@ -103,7 +111,9 @@ class Alumno extends Persona
         "apellido" => $apellido
       );
 
-      return new Alumno($parameters);
+      $alumno = new Alumno();
+      $alumno->SetParams($parameters);
+      return $alumno;
     }
   }
 

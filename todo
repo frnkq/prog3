@@ -1,11 +1,22 @@
 maxi gmaxn
 
-
-listaralumnos devuelva array, una sola funcion $legajo = null o $legajo = smth
-listarlos en tabla
-
-
 revisar todas las respuestas usar bools en los metodos y devolver mediante el index
+poder hacer un post para "modificarlafoto"
+base de datos en donweb
+GuardarAlumno() -> se le pasa un id = modificar
+dnied access on not index
+clase intermedia "negocio" que verifique
+dao->guardar
+verificador->guardar -> existe-> dao.guardar ->noexiste-> nada
+interfaz dao/verificador
+
+TODO JSON
+Todas las clases FromJson() ToJson()
+TJson todas
+Files DAO
+DB Dao
+SaveAlumno -> check if id exists // legajo exists // do some validations
+error validation on sql execution
 
 carga array
 (a/b/m)

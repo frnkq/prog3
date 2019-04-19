@@ -60,6 +60,7 @@ class PicturesProcessor
       rename("$uploadDir/$finalName", "$backupsDir/$backupFinalName");
       imagepng($watermarkedImage, "$uploadDir/$finalName");
     }
-      return "$uploadDir/$finalName";
+    //return "$uploadDir/$finalName";
+    return $finalName;
   }
 }

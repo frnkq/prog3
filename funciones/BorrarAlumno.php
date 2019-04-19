@@ -7,27 +7,32 @@ require_once 'helpers/FilesHelper.php';
 
 function BorrarAlumno($alumnoToDelete)
 {
-  $alumnoToDelete = Alumno::StdToAlumno($alumnoToDelete);
-  $alumnos = AlumnoDao::GetAlumnosFromJson(AppConfig::$alumnosJsonFileName);
-  $alumnosCopy = $alumnos;
-  $deleted = false;
-  foreach($alumnos as $key => $alumno)
-  {
-    $alumno = Alumno::StdToAlumno($alumno);
-    if($alumno->legajo === $alumnoToDelete->legajo)
-    {
-      unset($alumnosCopy[$key]);
-      $deleted = true;
-      break;
-    }
-  }
-  if($deleted)
-  {
-    AlumnoDao::SaveAlumnos(FilesHelper::GetDir(AppConfig::$alumnosJsonFileName), $alumnosCopy);
-    echo "alumno eliminado";
-  }
-  else
-  {
-    echo "alumno no eliminado";
-  }
+  $alumno = Alumno::StdToAlumno($alumnoToDelete);
+  AlumnoDAO::BorrarAlumnoByLegajo($alumno->legajo);
 }
+//function BorrarAlumno($alumnoToDelete)
+//{
+//  $alumnoToDelete = Alumno::StdToAlumno($alumnoToDelete);
+//  $alumnos = AlumnoDao::GetAlumnosFromJson(AppConfig::$alumnosJsonFileName);
+//  $alumnosCopy = $alumnos;
+//  $deleted = false;
+//  foreach($alumnos as $key => $alumno)
+//  {
+//    $alumno = Alumno::StdToAlumno($alumno);
+//    if($alumno->legajo === $alumnoToDelete->legajo)
+//    {
+//      unset($alumnosCopy[$key]);
+//      $deleted = true;
+//      break;
+//    }
+//  }
+//  if($deleted)
+//  {
+//    AlumnoDao::SaveAlumnos(FilesHelper::GetDir(AppConfig::$alumnosJsonFileName), $alumnosCopy);
+//    echo "alumno eliminado";
+//  }
+//  else
+//  {
+//    echo "alumno no eliminado";
+//  }
+//}

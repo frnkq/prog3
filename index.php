@@ -22,14 +22,7 @@ switch($_SERVER['REQUEST_METHOD'])
     echo $header;
     if(!is_null($legajo = $parameters["get"]["legajo"]))
     {
-      if(!is_null($alumno = ListarAlumno($legajo)))
-      {
         ListarAlumno($legajo);
-      }
-      else
-      {
-        echo "Alumno no encontrado";
-      }
     }
     else
     {

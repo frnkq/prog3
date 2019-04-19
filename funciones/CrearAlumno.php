@@ -8,9 +8,10 @@ function CrearAlumno($parameters)
 {
   $fileName = AppConfig::$alumnosJsonFileName;
 
-  $alumno = new Alumno($parameters);
+  $alumno = new Alumno();
+  $alumno->SetParams($parameters);
   $alumno->foto = PicturesProcessor::UploadProfilePicture($parameters["foto"], $alumno->nombre,$alumno->legajo);
-  AlumnoDao::SaveAlumno($alumno, $fileName);
+  AlumnoDao::SaveAlumno($alumno);
   echo ReturnResponse(true, null, $alumno);
   return $alumno;
 }
