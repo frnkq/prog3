@@ -9,8 +9,8 @@ class AppConfig
 
   public static $db = array(
     "host" => "localhost",
-    "username" => "root",
-    "password" => "frnkquito",
+    "username" => "{{}}",
+    "password" => "{{}}",
     "dbname" => "utn_alumnos"
   );
 }
