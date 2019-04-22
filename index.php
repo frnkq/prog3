@@ -5,55 +5,48 @@ require_once 'funciones/BorrarAlumno.php';
 require_once 'funciones/ModificarAlumno.php';
 require_once 'helpers/ProcessRequest.php';
 require_once 'helpers/DecodifyJson.php';
+require_once 'helpers/AppConfig.php';
 
-$header = "<h1>Alumnos</h1><hr>";
-$fileName = "alumnos.json";
 
 $parameters = ProcessRequest();
 
+
+$header = "<h1>Alumnos</h1><hr>";
+
+
 switch($_SERVER['REQUEST_METHOD'])
 {
-  case 'POST':
-    $postParameters = $parameters["post"];
-    $alumno = CrearAlumno($postParameters);
+  case 'GET':
+    if(AppConfig::isHtmlClient()) echo $header;
+
+    if(!is_null($legajo = $parameters["get"]["legajo"]))
+      $response = ListarAlumno($legajo);
+    else
+      $response = ListarAlumnos();
     break;
 
-  case 'GET':
-    echo $header;
-    if(!is_null($legajo = $parameters["get"]["legajo"]))
-    {
-        ListarAlumno($legajo);
-    }
-    else
-    {
-      echo ListarAlumnos();
-    }
+  case 'POST':
+    $postParameters = $parameters["post"];
+    $response = CrearAlumno($postParameters);
     break;
 
   case 'PUT':
       $alumnoToModify = DecodifyJson::JsonToArray(trim(file_get_contents("php://input")));
-      if($alumnoToModify != null)
-      {
-        if(array_key_exists("legajo", $alumnoToModify))
-        {
-          ModificarAlumno($alumnoToModify);
-        }
-        else
-        {
-            echo "alumno no encontrado";
-        }
-      }
+      if($alumnoToModify != null && array_key_exists("legajo", $alumnoToModify))
+        $response = ModificarAlumno($alumnoToModify);
     break;
 
   case 'DELETE':
     $alumnoToDelete = DecodifyJson::JsonToArray(trim(file_get_contents("php://input")));
-    if(array_key_exists("legajo", $alumnoToDelete))
-    {
-      BorrarAlumno($alumnoToDelete);
-    }
+    if($alumnoToDelete != null && array_key_exists("legajo", $alumnoToDelete))
+      $response = BorrarAlumno($alumnoToDelete);
     break;
 
   default:
     echo $header;
     echo "Method not allowed";
+    break;
+
 }
+if(isset($response) && !AppConfig::isHtmlClient())
+  echo $response;

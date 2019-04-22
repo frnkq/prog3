@@ -86,6 +86,7 @@ class AlumnoDao
       $query->bindValue(':foto', $alumno->foto, PDO::PARAM_STR);
 
       $result = $query->execute();
+      return $result;
     }
 
 
@@ -93,7 +94,7 @@ class AlumnoDao
 
     /**
      * UpdateAlumno Updates alumno from self::$tableName
-     * 
+     *
      * @param mixed $alumno Alumno to be edited, legajo has to be existent
      * @static
      * @access public
@@ -101,19 +102,39 @@ class AlumnoDao
      */
     public static function UpdateAlumno($alumno)
     {
-      $updateQuery = "update ".self::$tableName." set nombre=:nombre, edad=:edad, dni=:dni, apellido=:apellido ";
+      $originalAlumno = self::GetAlumnoByLegajo($alumno->legajo);
+      if($originalAlumno == false)
+      {
+          return false;
+      }
+      $updateQuery = "update ".self::$tableName." set nombre=:nombre, edad=:edad, dni=:dni, apellido=:apellido, foto=:foto ";
       $updateQuery .= "where legajo=:legajo";
       $query = MyPDO::GetPDO()->ReturnQuery($updateQuery);
 
       $query->bindValue(':legajo', $alumno->legajo, PDO::PARAM_STR);
 
-      $query->bindValue(':nombre', $alumno->nombre, PDO::PARAM_STR);
-      $query->bindValue(':edad', $alumno->edad, PDO::PARAM_INT);
-      $query->bindValue(':dni', $alumno->dni, PDO::PARAM_STR);
-      $query->bindValue(':apellido', $alumno->apellido, PDO::PARAM_STR);
+      //preserve old data if nulls are given
+      $nombre = (is_null($alumno->nombre)) ? $originalAlumno->nombre : $alumno->nombre;
+      $edad = (is_null($alumno->edad)) ? $originalAlumno->edad : $alumno->edad;
+      $dni = (is_null($alumno->dni)) ? $originalAlumno->dni : $alumno->dni;
+      $apellido = (is_null($alumno->apellido)) ? $originalAlumno->apellido : $alumno->apellido;
+      $foto = (is_null($alumno->foto)) ? $originalAlumno->foto : $alumno->foto;
 
-      $result = $query->execute();
-      var_dump($result);
+      $query->bindValue(':nombre', $nombre, PDO::PARAM_STR);
+      $query->bindValue(':edad', $edad, PDO::PARAM_INT);
+      $query->bindValue(':dni', $dni, PDO::PARAM_STR);
+      $query->bindValue(':apellido', $apellido, PDO::PARAM_STR);
+      $query->bindValue(':foto', $foto, PDO::PARAM_STR);
+
+      try
+      {
+        $result = $query->execute();
+        return true;
+      }
+      catch(Exception $e)
+      {
+        return false;
+      }
     }
 
     /******************************DELETE***********************************/
@@ -129,6 +150,8 @@ class AlumnoDao
      */
     public static function DeleteAlumnoByLegajo($legajo)
     {
+        if(self::GetAlumnoByLegajo($legajo) == null)
+          return false;
         $deleteQuery = "delete from ".self::$tableName." where legajo=:legajo";
         $query = MyPDO::GetPDO()->ReturnQuery($deleteQuery);
         $query->bindValue(':legajo', $legajo, PDO::PARAM_STR);
@@ -166,7 +189,6 @@ class AlumnoDao
         try
         {
           $result = $query->execute();
-          var_dump($result);
           return true;
         }
         catch(Exception $e)
@@ -174,57 +196,6 @@ class AlumnoDao
           return false;
         }
     }
-    public static function GetAlumnosFromJson($fileName)
-    {
-        $alumnos = array();
-        if(file_exists($fileName))
-        {
-          $alumnos = json_decode(file_get_contents($fileName), true);
-        }
-        return $alumnos;
-    }
 
 
-
-    public static function GetAlumnoFromJson($fileName, $legajo)
-    {
-        $alumnos = self::GetAlumnosFromJson($fileName);
-
-        foreach($alumnos as $alumno)
-        {
-            $alumno = Alumno::StdToAlumno($alumno);
-            if($alumno->legajo == $legajo)
-            {
-                return $alumno;
-            }
-        }
-        return null;
-    }
-
-    //Deprecated because of PDO
-    //public static function SaveAlumno($alumno, $fileName)
-    //{
-    //  if(is_null($alumnos = self::GetAlumnosFromJson(AppConfig::$alumnosJsonFileName)))
-    //  {
-    //    $alumnos = array();
-    //  }
-
-    //  if(is_null(self::GetAlumnoFromJson($fileName, $alumno->legajo)))
-    //  {
-    //    array_push($alumnos, $alumno);
-    //  }
-    //  else
-    //  {
-    //    echo "ya existe";
-    //    return false;
-    //  }
-
-    //  return self::SaveAlumnos($fileName, $alumnos);
-    //}
-
-    public static function SaveAlumnos($fileName, $alumnos)
-    {
-      file_put_contents($fileName, json_encode($alumnos));
-      return true;
-    }
 }

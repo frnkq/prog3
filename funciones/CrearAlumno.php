@@ -3,10 +3,11 @@ require_once 'helpers/ReturnResponse.php';
 require_once 'helpers/PicturesProcessor.php';
 require_once 'clases/Alumno.php';
 require_once 'clases/AlumnoDAO.php';
+require_once 'funciones/ModificarAlumno.php';
 
 function CrearAlumno($parameters)
 {
-  $fileName = AppConfig::$alumnosJsonFileName;
+  $response = null;
 
   $alumno = new Alumno();
   $alumno->SetParams($parameters);
@@ -14,14 +15,25 @@ function CrearAlumno($parameters)
     $alumno->foto = PicturesProcessor::UploadProfilePicture($parameters["foto"], $alumno->nombre,$alumno->legajo);
 
   //Si hay alumno con ese legajo, modificarlo
-  if(!is_null(AlumnoDAO::GetAlumnoByLegajo($alumno->legajo)))
+  if(AlumnoDAO::GetAlumnoByLegajo($alumno->legajo))
   {
-    AlumnoDAO::UpdateAlumno($alumno);
-    return $alumno;
+    $response = ModificarAlumno($alumno);
+  }
+  else
+  {
+    $success = AlumnoDao::SaveAlumno($alumno);
+    if($success)
+    {
+      $response = ReturnResponse::Response(AppConfig::$apiActions['create'],
+        true, 708, $alumno);
+    }
+    else
+    {
+      $response = ReturnResponse::Response(AppConfig::$apiActions['create'],
+        false, 707, null);
+    }
   }
 
-  AlumnoDao::SaveAlumno($alumno);
-  echo ReturnResponse(true, null, $alumno);
-  return $alumno;
+  return $response;
 }
 

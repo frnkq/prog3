@@ -30,6 +30,7 @@ class Alumno extends Persona
     }
 
   }
+
   public static function CreateHTMLTable($content)
   {
     $tableHeader = "<table border='1px'><thead>";
