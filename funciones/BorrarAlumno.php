@@ -8,7 +8,7 @@ require_once 'helpers/FilesHelper.php';
 function BorrarAlumno($alumnoToDelete)
 {
   $alumno = Alumno::StdToAlumno($alumnoToDelete);
-  AlumnoDAO::BorrarAlumnoByLegajo($alumno->legajo);
+  AlumnoDAO::DeleteAlumnoByLegajo($alumno->legajo);
 }
 //function BorrarAlumno($alumnoToDelete)
 //{

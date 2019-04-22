@@ -6,24 +6,6 @@ class Alumno extends Persona
 {
   public $legajo;
   public $foto;
-  //function __construct($parameters)
-  //{
-  //  if($parameters != null)
-  //  {
-  //    $nombre = array_key_exists("nombre", $parameters) ? $parameters["nombre"] : "noname";
-  //    $edad = array_key_exists("edad", $parameters) ? $parameters["edad"] : 0;
-  //    $dni = array_key_exists("dni", $parameters) ? $parameters["dni"] : 0;
-  //    $apellido = array_key_exists("apellido", $parameters) ? $parameters["apellido"] : "nosurname";
-  //    $legajo = array_key_exists("legajo", $parameters) ? $parameters["legajo"] : 0;
-
-  //    parent::__construct($nombre, $edad, $dni, $apellido);
-
-  //    $this->legajo = $legajo;
-
-  //    if(array_key_exists("foto", $parameters))
-  //      $this->foto = $parameters["foto"];
-  //  }
-  //}
 
   public function SetParams($parameters)
   {
@@ -43,6 +25,8 @@ class Alumno extends Persona
 
       if(array_key_exists("foto", $parameters))
         $this->foto = $parameters["foto"];
+      else
+        $this->foto = null;
     }
 
   }
