@@ -1,3 +1,25 @@
+Modificar, Borrar json
+
+funciones:
+  listaralumnos
+    ->listaralumnos(sourcE)
+      ->listaralumnosmysql
+        ->AlumnoDAO::GetAlumno
+      ->listaralumnojson
+        ->alumnodaofiles::getalumno
+      ->crearalumnomysql
+        crea alumno, llama a guardar
+
+modificar en daofiles (update en dao files)
+copy dao to daofiles
+
+use daofiles as much as possible on funciones 
+
+funciones -> crear() hace lo pertinente -> usa dao(files) para get, guardar
+funciones -> modificar() hace lo pertinente -> usa dao(files) para get, guardar
+funciones -> borrar() hace lo pertinente -> usa dao(files) para get, borrar, guardar array
+funciones -> listar() hace lo pertinente -> usa dao(files) para get y formatea
+
 maxi gmaxn
 
 revisar todas las respuestas usar bools en los metodos y devolver mediante el index

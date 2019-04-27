@@ -4,55 +4,70 @@ require_once 'clases/Alumno.php';
 
 class AlumnoDaoFiles
 {
-    public static function GetAlumnosFromJson($fileName)
+    public static function GetAlumnos($format)
     {
-        $alumnos = array();
-        if(file_exists($fileName))
-        {
-          $alumnos = json_decode(file_get_contents($fileName), true);
-        }
-        return $alumnos;
-    }
-
-
-
-    public static function GetAlumnoFromJson($fileName, $legajo)
-    {
-        $alumnos = self::GetAlumnosFromJson($fileName);
-
-        foreach($alumnos as $alumno)
-        {
-            $alumno = Alumno::StdToAlumno($alumno);
-            if($alumno->legajo == $legajo)
-            {
-                return $alumno;
-            }
-        }
-        return null;
-    }
-    public static function SaveAlumno($alumno, $fileName)
-    {
-      if(is_null($alumnos = self::GetAlumnosFromJson(AppConfig::$alumnosJsonFileName)))
+      switch($format)
       {
-        $alumnos = array();
-      }
+        case "json":
+          $alumnos = array();
+          if(file_exists(AppConfig::$alumnosJsonFileName))
+            $alumnos = json_decode(file_get_contents(AppConfig::$alumnosJsonFileName), true);
+          return $alumnos;
+          break;
 
-      if(is_null(self::GetAlumnoFromJson($fileName, $alumno->legajo)))
+        case "csv":
+
+          break;
+      }
+    }
+
+    public static function GetAlumnoByLegajo($format, $legajo)
+    {
+      $alumnos = self::GetAlumnos($format);
+      foreach($alumnos as $alumno)
+      {
+          $alumno = Alumno::StdToAlumno($alumno);
+          if($alumno->legajo == $legajo)
+          {
+              return $alumno;
+          }
+      }
+      return null;
+    }
+
+
+    public static function SaveAlumno($alumno, $format)
+    {
+      $alumnos = array();
+      $alumnos = self::GetAlumnos($format);
+      if(is_null(self::GetAlumnoByLegajo($format, $alumno->legajo)))
       {
         array_push($alumnos, $alumno);
       }
       else
       {
+        //todo modificar
         echo "ya existe";
         return false;
       }
 
-      return self::SaveAlumnos($fileName, $alumnos);
+      return self::SaveAlumnos($alumnos, $format);
   }
 
-  public static function SaveAlumnos($fileName, $alumnos)
+  public static function SaveAlumnos($alumnos, $source)
   {
-    file_put_contents($fileName, json_encode($alumnos));
-    return true;
+    switch($source)
+    {
+    case "json":
+      file_put_contents(AppConfig::$alumnosJsonFileName, json_encode($alumnos));
+      return true;
+      break;
+
+    case "csv":
+      //file_put_contents($fileName, $alumnos);
+      return true;
+      break;
+
+    }
   }
 }

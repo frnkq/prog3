@@ -1,1 +1,1 @@
-[{"legajo":"121230","nombre":"franco","edad":"22","dni":"123123123","apellido":"nosurname","foto":"fotos\/121230_franco.jpg"},{"legajo":"121231","nombre":"franco","edad":"22","dni":"123123123","apellido":"nosurname","foto":null}]
+{"1":{"legajo":null,"foto":null,"nombre":null,"edad":null,"dni":null,"apellido":"nosurname"},"2":{"legajo":"121231","foto":null,"nombre":"Carlitos","edad":"25","dni":"39774903","apellido":"nosurname"}}

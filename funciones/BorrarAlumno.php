@@ -4,8 +4,25 @@ require_once 'clases/AlumnoDAO.php';
 
 require_once 'helpers/AppConfig.php';
 require_once 'helpers/FilesHelper.php';
+//return response on json
+function BorrarAlumno($alumnoToDelete, $source)
+{
+  switch($source)
+  {
+    case "mysql":
+      return BorrarAlumnoMySql($alumnoToDelete);
+      break;
 
-function BorrarAlumno($alumnoToDelete)
+    case "json":
+      return BorrarAlumnoJson($alumnoToDelete);
+      break;
+
+    case "csv":
+
+      break;
+  }
+}
+function BorrarAlumnoMySql($alumnoToDelete)
 {
   $alumno = Alumno::StdToAlumno($alumnoToDelete);
   $alumnoBefore = AlumnoDAO::GetAlumnoByLegajo($alumno->legajo);
@@ -27,7 +44,7 @@ function BorrarAlumno($alumnoToDelete)
 function BorrarAlumnoJson($alumnoToDelete)
 {
   $alumnoToDelete = Alumno::StdToAlumno($alumnoToDelete);
-  $alumnos = AlumnoDao::GetAlumnosFromJson(AppConfig::$alumnosJsonFileName);
+  $alumnos = AlumnoDaoFiles::GetAlumnos("json");
   $alumnosCopy = $alumnos;
   $deleted = false;
   foreach($alumnos as $key => $alumno)
@@ -35,14 +52,13 @@ function BorrarAlumnoJson($alumnoToDelete)
     $alumno = Alumno::StdToAlumno($alumno);
     if($alumno->legajo === $alumnoToDelete->legajo)
     {
-      unset($alumnosCopy[$key]);
-      $deleted = true;
+      unset($alumnosCopy[$key]); $deleted = true;
       break;
     }
   }
   if($deleted)
   {
-    AlumnoDao::SaveAlumnos(FilesHelper::GetDir(AppConfig::$alumnosJsonFileName), $alumnosCopy);
+    AlumnoDaoFiles::SaveAlumnos($alumnosCopy, "json");
     echo "alumno eliminado";
   }
   else

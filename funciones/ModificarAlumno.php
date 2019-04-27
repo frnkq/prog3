@@ -6,7 +6,24 @@ require_once 'helpers/PicturesProcessor.php';
 require_once 'clases/AlumnoDAO.php';
 require_once 'clases/Alumno.php';
 
-function ModificarAlumno($alumnoToModify)
+function ModificarAlumno($alumnoToModify, $source)
+{
+  switch($source)
+  {
+     case "mysql":
+       return ModificarAlumnoMysql($alumnoToModify);
+       break;
+
+     case "json":
+       return ModificarAlumnoJson($alumnoToModify);
+       break;
+
+     case "csv":
+
+       break;
+  }
+}
+function ModificarAlumnoMysql($alumnoToModify)
 {
   if(!get_class($alumnoToModify) != "Alumno")
     $alumno = Alumno::StdToAlumno($alumnoToModify);
@@ -30,8 +47,7 @@ function ModificarAlumno($alumnoToModify)
 
 function ModificarAlumnoJson($alumnoToModify)
 {
-  $alumnoToModify = Alumno::StdToAlumno($alumnoToModify);
-  $alumnos = AlumnoDaoFiles::GetAlumnosFromJson(AppConfig::$alumnosJsonFileName);
+  $alumnos = AlumnoDaoFiles::GetAlumnos("json");
 
   $alumnosCopy = $alumnos;
   $result = null;
@@ -46,24 +62,31 @@ function ModificarAlumnoJson($alumnoToModify)
       $nombre = (!is_null($alumnoToModify->nombre)) ? $alumnoToModify->nombre : $alumno->nombre;
       $edad = (!is_null($alumnoToModify->edad)) ? $alumnoToModify->edad : $alumno->edad;
       $dni = (!is_null($alumnoToModify->dni)) ? $alumnoToModify->dni : $alumno->dni;
+      $apellido = (!is_null($alumnoToModify->apellido)) ? $alumnoToModify->apellido : $alumno->apellido;
 
-      $alumnoParameters = array("nombre" => $nombre, "edad" => $edad, "dni" => $dni, "legajo" => $legajo);
+      $alumnoParameters = array(
+        "nombre" => $nombre,
+        "apellido" => $apellido,
+        "edad" => $edad, 
+        "dni" => $dni, 
+        "legajo" => $legajo);
 
-      $newAlumno = new Alumno($alumnoParameters);
+      $newAlumno = new Alumno();
+      $newAlumno->setParams($alumnoParameters);
 
       $alumnosCopy[$key] = $newAlumno;
 
-      $result = ReturnResponse(true, null, array("OldAlumno" => $alumno, "NewAlumno" => $newAlumno));
+      //$result = ReturnResponse(true, null, array("OldAlumno" => $alumno, "NewAlumno" => $newAlumno));
       $found = true;
       break;
     }
 
     if(!$found)
     {
-      $result = ReturnResponse(false, "Alumno no encontrado", null);
+      //$result = ReturnResponse(false, "Alumno no encontrado", null);
     }
   }
 
-  file_put_contents(AppConfig::$alumnosJsonFileName, json_encode($alumnosCopy));
+  AlumnoDaoFiles::SaveAlumnos($alumnosCopy, "json");
   echo $result;
 }

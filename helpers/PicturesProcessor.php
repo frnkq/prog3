@@ -7,10 +7,11 @@ class PicturesProcessor
   public static function UploadProfilePicture($foto, $nombre, $legajo)
   {
     $extension = FilesHelper::GetExtension($foto["name"]);
-    $watermarkedImage = self::WatermarkImage($foto["tmp_name"], $extension);
+    //if i don't want to watermark, watermarkedImage = self::CreateImageBasedOnFormat();
+    //same params
+    $image = self::WatermarkImage($foto["tmp_name"], $extension);
     $nameParameters = array($legajo, $nombre);
-    return self::LocateProfilePicture($watermarkedImage, $nameParameters);
-
+    return self::LocateProfilePicture($image, $nameParameters);
   }
 
   public static function WatermarkImage($picture, $extension)
@@ -18,14 +19,7 @@ class PicturesProcessor
     $logoPath = FilesHelper::GetDir(AppConfig::$resourcesDir)."/images/logo.png";
     $watermark = imagecreatefrompng($logoPath);
 
-    if($extension == "jpg")
-    {
-      $img = imagecreatefromjpeg($picture);
-    }
-    else if($extension == "png")
-    {
-      $img = imagecreatefrompng($picture);
-    }
+    $img = self::CreateImageBasedOnFormat($picture, $extension);
 
     $right = 10;
     $bottom = 10;
@@ -41,6 +35,18 @@ class PicturesProcessor
     return $img;
   }
 
+  public static function CreateImageBasedOnFormat($picture, $extension)
+  {
+      if($extension == "jpg")
+      {
+        $img = imagecreatefromjpeg($picture);
+      }
+      else if($extension == "png")
+      {
+        $img = imagecreatefrompng($picture);
+      }
+      return $img;
+  }
   public static function LocateProfilePicture($watermarkedImage, $nameParameters)
   {
     $uploadDir = FilesHelper::GetDir(AppConfig::$profilePicturesDir);
@@ -60,7 +66,6 @@ class PicturesProcessor
       rename("$uploadDir/$finalName", "$backupsDir/$backupFinalName");
       imagepng($watermarkedImage, "$uploadDir/$finalName");
     }
-    //return "$uploadDir/$finalName";
     return $finalName;
   }
 }
