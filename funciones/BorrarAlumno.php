@@ -1,38 +1,72 @@
 <?php
 require_once 'clases/Alumno.php';
-require_once 'clases/AlumnoDAO.php';
 
 require_once 'helpers/AppConfig.php';
 require_once 'helpers/FilesHelper.php';
+//
+//return response on json
+function BorrarAlumno($alumnoToDelete, $source)
+{
+  switch($source)
+  {
+    case "mysql":
+      return BorrarAlumnoMySql($alumnoToDelete);
+      break;
 
-function BorrarAlumno($alumnoToDelete)
+    case "json":
+      return BorrarAlumnoJson($alumnoToDelete);
+      break;
+
+    case "csv":
+      return BorrarAlumnoCsv($alumnoToDelete);
+      break;
+  }
+}
+function BorrarAlumnoMySql($alumnoToDelete)
 {
   $alumno = Alumno::StdToAlumno($alumnoToDelete);
-  AlumnoDAO::BorrarAlumnoByLegajo($alumno->legajo);
+  $alumnoBefore = AlumnoDAO::GetAlumnoByLegajo($alumno->legajo);
+  $success = AlumnoDAO::DeleteAlumnoByLegajo($alumno->legajo);
+
+  if($success)
+  {
+    $response = ReturnResponse::Response("delete", true, 706, $alumnoBefore);
+  }
+  else
+  {
+    $response = ReturnResponse::Response("delete", false, 705, null);
+  }
+  return $response;
 }
-//function BorrarAlumno($alumnoToDelete)
-//{
-//  $alumnoToDelete = Alumno::StdToAlumno($alumnoToDelete);
-//  $alumnos = AlumnoDao::GetAlumnosFromJson(AppConfig::$alumnosJsonFileName);
-//  $alumnosCopy = $alumnos;
-//  $deleted = false;
-//  foreach($alumnos as $key => $alumno)
-//  {
-//    $alumno = Alumno::StdToAlumno($alumno);
-//    if($alumno->legajo === $alumnoToDelete->legajo)
-//    {
-//      unset($alumnosCopy[$key]);
-//      $deleted = true;
-//      break;
-//    }
-//  }
-//  if($deleted)
-//  {
-//    AlumnoDao::SaveAlumnos(FilesHelper::GetDir(AppConfig::$alumnosJsonFileName), $alumnosCopy);
-//    echo "alumno eliminado";
-//  }
-//  else
-//  {
-//    echo "alumno no eliminado";
-//  }
-//}
+
+function BorrarAlumnoJson($alumnoToDelete)
+{
+  $alumnoToDelete = Alumno::StdToAlumno($alumnoToDelete);
+
+  $deletedAlumno = DaoJson::Delete($alumnoToDelete);
+
+  if(is_null($deletedAlumno))
+  {
+    $response = ReturnResponse::Response("update", false, 705, null);
+  }
+
+  $response = ReturnResponse::Response("update", true, 706, $deletedAlumno);
+
+  return $response;
+}
+
+function BorrarAlumnoCsv($alumnoToDelete)
+{
+  $alumnoToDelete = Alumno::StdToAlumno($alumnoToDelete);
+
+  $deletedAlumno = DaoCsv::Delete($alumnoToDelete);
+
+  if(is_null($deletedAlumno))
+  {
+    $response = ReturnResponse::Response("delete", false, 705, null);
+  }
+
+  $response = ReturnResponse::Response("delete", true, 706, $deletedAlumno);
+
+  return $response;
+}

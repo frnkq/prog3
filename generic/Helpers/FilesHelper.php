@@ -1,6 +1,15 @@
 <?php
 class FilesHelper
 {
+  /**
+   * ConstructFileName
+   *
+   * @param mixed $nameParameters
+   * @param mixed $extension
+   * @static
+   * @access public
+   * @return void
+   */
   public static function ConstructFileName($nameParameters, $extension)
   {
     $finalName = "";
@@ -15,6 +24,14 @@ class FilesHelper
     return $finalName;
   }
 
+  /**
+   * GetExtension
+   *
+   * @param mixed $string
+   * @static
+   * @access public
+   * @return void
+   */
   public static function GetExtension($string)
   {
     $nameExt = explode(".", $string);
@@ -22,14 +39,30 @@ class FilesHelper
     return $nameExt;
   }
 
+  /**
+   * GetDir
+   *
+   * @param mixed $dir
+   * @static
+   * @access public
+   * @return void
+   */
   public static function GetDir($dir)
   {
     return $_SERVER['DOCUMENT_ROOT']."/".$dir;
   }
 
+  /**
+   * ListFilesFromDir
+   *
+   * @param mixed $dir
+   * @static
+   * @access public
+   * @return void
+   */
   public static function ListFilesFromDir($dir)
   {
-    //return asc 
+    //return asc
     $files = scandir($dir, 1);
     $filesWithoutDirectory = $files;
 
