@@ -6,13 +6,14 @@ require_once 'funciones/ModificarAlumno.php';
 require_once 'helpers/ProcessRequest.php';
 require_once 'helpers/DecodifyJson.php';
 require_once 'helpers/AppConfig.php';
-
+require_once 'helpers/FilesHelper.php';
+require_once 'helpers/ViewHelper.php';
 
 $parameters = ProcessRequest();
 
 
 $header = "<h1>Alumnos</h1><hr>";
-$source = "json";
+$source = "csv";
 
 switch($_SERVER['REQUEST_METHOD'])
 {

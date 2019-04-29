@@ -3,7 +3,6 @@ require_once 'helpers/AppConfig.php';
 require_once 'helpers/ReturnResponse.php';
 require_once 'helpers/PicturesProcessor.php';
 
-require_once 'clases/AlumnoDAO.php';
 require_once 'clases/Alumno.php';
 
 function ModificarAlumno($alumnoToModify, $source)
@@ -19,74 +18,55 @@ function ModificarAlumno($alumnoToModify, $source)
        break;
 
      case "csv":
-
+       return ModificarAlumnoCsv($alumnoToModify);
        break;
   }
 }
+
 function ModificarAlumnoMysql($alumnoToModify)
 {
   if(!get_class($alumnoToModify) != "Alumno")
     $alumno = Alumno::StdToAlumno($alumnoToModify);
   $alumno = $alumnoToModify;
-  $alumnoBefore = AlumnoDAO::GetAlumnoByLegajo($alumno->legajo);
-  $success = AlumnoDao::UpdateAlumno($alumno);
-  $alumnoAfter = AlumnoDAO::GetAlumnoByLegajo($alumno->legajo);
+  $alumnoBefore = DaoMysql::GetByIdentifier($alumno->legajo);
+  $success = DaoMysql::Update($alumno);
+  $alumnoAfter = DaoMysql::GetByIdentifier($alumno->legajo);
 
   if($success)
   {
-    $response = ReturnResponse::Response(AppConfig::$apiActions['update'],
-      true, 704, array("OldAlumno" => $alumnoBefore, "NewAlumno" => $alumnoAfter));
+    $response = ReturnResponse::Response("update",true, 704, array("OldAlumno" => $alumnoBefore, "NewAlumno" => $alumnoAfter));
   }
   else
   {
-    $response = ReturnResponse::Response(AppConfig::$apiActions['update'], 
-    false, 703, $alumnoBefore);
+    $response = ReturnResponse::Response("update", false, 703, $alumnoBefore);
   }
   return $response;
 }
 
 function ModificarAlumnoJson($alumnoToModify)
 {
-  $alumnos = AlumnoDaoFiles::GetAlumnos("json");
+  $newAlumno = DaoJson::Update($alumnoToModify);
 
-  $alumnosCopy = $alumnos;
-  $result = null;
-  $found = false;
-  foreach($alumnos as $key => $alumno)
+  if(is_null($newAlumno))
   {
-    $alumno = Alumno::StdToAlumno($alumno);
-
-    if($alumno->legajo == $alumnoToModify->legajo)
-    {
-      $legajo = $alumno->legajo;
-      $nombre = (!is_null($alumnoToModify->nombre)) ? $alumnoToModify->nombre : $alumno->nombre;
-      $edad = (!is_null($alumnoToModify->edad)) ? $alumnoToModify->edad : $alumno->edad;
-      $dni = (!is_null($alumnoToModify->dni)) ? $alumnoToModify->dni : $alumno->dni;
-      $apellido = (!is_null($alumnoToModify->apellido)) ? $alumnoToModify->apellido : $alumno->apellido;
-
-      $alumnoParameters = array(
-        "nombre" => $nombre,
-        "apellido" => $apellido,
-        "edad" => $edad, 
-        "dni" => $dni, 
-        "legajo" => $legajo);
-
-      $newAlumno = new Alumno();
-      $newAlumno->setParams($alumnoParameters);
-
-      $alumnosCopy[$key] = $newAlumno;
-
-      //$result = ReturnResponse(true, null, array("OldAlumno" => $alumno, "NewAlumno" => $newAlumno));
-      $found = true;
-      break;
-    }
-
-    if(!$found)
-    {
-      //$result = ReturnResponse(false, "Alumno no encontrado", null);
-    }
+    $response = ReturnResponse::Response("update",false, 703, $alumnoToModify);
   }
 
-  AlumnoDaoFiles::SaveAlumnos($alumnosCopy, "json");
-  echo $result;
+  $response = ReturnResponse::Response("update",true, 704, $newAlumno);
+
+  echo $response;
+}
+
+function ModificarAlumnoCsv($alumnoToModify)
+{
+  $newAlumno = DaoCsv::Update($alumnoToModify);
+
+  if(is_null($newAlumno))
+  {
+    $response = ReturnResponse::Response("update",false, 703, $alumnoToModify);
+  }
+
+  $response = ReturnResponse::Response("update",true, 704, $newAlumno);
+
+  echo $response;
 }

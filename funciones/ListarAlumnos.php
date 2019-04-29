@@ -1,7 +1,8 @@
 <?php
 require_once 'clases/Alumno.php';
-require_once 'clases/AlumnoDAO.php';
-require_once 'clases/AlumnoDAOfiles.php';
+require_once 'clases/DaoMysql.php';
+require_once 'clases/DaoJson.php';
+require_once 'clases/DaoCsv.php';
 
 require_once 'helpers/ReturnResponse.php';
 require_once 'helpers/AppConfig.php';
@@ -27,7 +28,7 @@ function ListarAlumnos($source)
       break;
 
     case "csv":
-
+      return ListarAlumnosCsv();
       break;
   }
 }
@@ -52,7 +53,7 @@ function ListarAlumno($legajo, $source)
       break;
 
     case "csv":
-
+      return ListarAlumnoCsv($legajo);
       break;
   }
 }
@@ -66,14 +67,14 @@ function ListarAlumno($legajo, $source)
  */
 function ListarAlumnosMysql()
 {
-  $alumnos = AlumnoDAO::GetAllAlumnos();
+  $alumnos = DaoMysql::GetAll();
   $rows = "";
   foreach($alumnos as $alumno)
   {
     $rows .= $alumno->ToString();
   }
   if(AppConfig::isHtmlClient()) echo Alumno::CreateHtmlTable($rows);
-  return ReturnResponse::Response(AppConfig::$apiActions['get'], true, 700, $alumnos);
+  return ReturnResponse::Response("get", true, 700, $alumnos);
 }
 
 /**
@@ -85,16 +86,16 @@ function ListarAlumnosMysql()
  */
 function ListarAlumnoMysql($legajo)
 {
-  $alumno = AlumnoDAO::GetAlumnoByLegajo($legajo);
+  $alumno = DaoMysql::GetByIdentifier($legajo);
 
   if($alumno)
   {
     if(AppConfig::isHtmlClient()) echo Alumno::CreateHtmlTable($alumno->ToString());
-    $response = ReturnResponse::Response(AppConfig::$apiActions['get'], true, 702, $alumno);
+    $response = ReturnResponse::Response("get", true, 702, $alumno);
   }
   else
   {
-    $response = ReturnResponse::Response(AppConfig::$apiActions['get'], false, 701, $alumno);
+    $response = ReturnResponse::Response("get", false, 701, $alumno);
   }
   return $response;
 }
@@ -106,8 +107,7 @@ function ListarAlumnoMysql($legajo)
  */
 function ListarAlumnosJson()
 {
-   $returnString = "";
-   $alumnos = AlumnoDaoFiles::GetAlumnos("json");
+   $alumnos = DaoJson::GetAll();
    $rows = "";
    if(!is_null($alumnos))
    {
@@ -118,7 +118,7 @@ function ListarAlumnosJson()
        }
    }
    if(AppConfig::isHtmlClient()) echo Alumno::CreateHtmlTable($rows);
-   return ReturnResponse::Response(AppConfig::$apiActions['get'], true, 700, $alumnos);
+   return ReturnResponse::Response("get", true, 700, $alumnos);
 }
 
 /**
@@ -130,39 +130,47 @@ function ListarAlumnosJson()
  */
 function ListarAlumnoJson($legajo)
 {
-  $alumno = AlumnoDaoFiles::GetAlumnoByLegajo("json", $legajo);
+  $alumno = DaoJson::GetByIdentifier($legajo);
 
   if($alumno)
   {
     if(AppConfig::isHtmlClient()) echo Alumno::CreateHtmlTable($alumno->ToString());
-    $response = ReturnResponse::Response(AppConfig::$apiActions['get'], true, 702, $alumno);
+    $response = ReturnResponse::Response("get", true, 702, $alumno);
   }
   else
   {
-    $response = ReturnResponse::Response(AppConfig::$apiActions['get'], false, 701, $alumno);
+    $response = ReturnResponse::Response("get", false, 701, $alumno);
   }
   return $response;
 }
 
-/**
- * ListarAlumnosCsv 
- * 
- * @access public
- * @return void
- */
 function ListarAlumnosCsv()
 {
-
+   $alumnos = DaoCsv::GetAll();
+   $rows = "";
+   if(!is_null($alumnos))
+   {
+       foreach($alumnos as $alumno)
+       {
+         $rows .= $alumno->ToString();
+       }
+   }
+   if(AppConfig::isHtmlClient()) echo Alumno::CreateHtmlTable($rows);
+   return ReturnResponse::Response("get", true, 700, $alumnos);
 }
 
-/**
- * ListarAlumnoCsv 
- * 
- * @param mixed $legajo 
- * @access public
- * @return void
- */
 function ListarAlumnoCsv($legajo)
 {
+  $alumno = DaoCsv::GetByIdentifier($legajo);
 
+  if($alumno)
+  {
+    if(AppConfig::isHtmlClient()) echo Alumno::CreateHtmlTable($alumno->ToString());
+    $response = ReturnResponse::Response("get", true, 702, $alumno);
+  }
+  else
+  {
+    $response = ReturnResponse::Response("get", false, 701, $alumno);
+  }
+  return $response;
 }

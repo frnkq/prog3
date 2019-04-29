@@ -1,6 +1,7 @@
 <?php
 
 include_once 'Persona.php';
+include_once 'helpers/AppConfig.php';
 
 class Alumno extends Persona
 {
@@ -31,6 +32,33 @@ class Alumno extends Persona
 
   }
 
+  public static function CsvToAlumno($csvLine)
+  {
+    $parameters = array(
+      "legajo" => $csvLine[0],
+      "nombre" => $csvLine[1],
+      "apellido" => $csvLine[2],
+      "edad" => $csvLine[3],
+      "dni" => $csvLine[4],
+      "foto" => $csvLine[5]
+    );
+    $alumno = new Alumno();
+    $alumno->SetParams($parameters);
+    return $alumno;
+  }
+
+  public static function ToCsv($alumno)
+  {
+      $sep = AppConfig::$csvSeparator;
+      $str = $alumno->legajo."".$sep;
+      $str .= $alumno->nombre."".$sep;
+      $str .= $alumno->apellido."".$sep;
+      $str .= $alumno->edad."".$sep;
+      $str .= $alumno->dni."".$sep;
+      $str .= $alumno->foto;
+      return $str;
+  }
+
   public static function CreateHTMLTable($content)
   {
     $tableHeader = "<table border='1px'><thead>";
@@ -53,12 +81,12 @@ class Alumno extends Persona
     $tableRow = "<tr>";
     $tableRow .="<td>$this->legajo</td>";
     $tableRow .="<td>$this->nombre</td>";
-    $tableRow .="<td>$this->edad</td>";
     $tableRow .="<td>$this->apellido</td>";
+    $tableRow .="<td>$this->edad</td>";
     $tableRow .="<td>$this->dni</td>";
     if(!is_null($this->foto))
     {
-      $tableRow .="<td><img src='$this->foto' height='48' width='48' alt='ProfilePicture'/></td>";
+      $tableRow .="<td><img src='".AppConfig::$profilePicturesDir."/$this->foto' height='48' width='48' alt='ProfilePicture'/></td>";
     }
     return $tableRow;
   }

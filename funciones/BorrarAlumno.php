@@ -1,9 +1,9 @@
 <?php
 require_once 'clases/Alumno.php';
-require_once 'clases/AlumnoDAO.php';
 
 require_once 'helpers/AppConfig.php';
 require_once 'helpers/FilesHelper.php';
+//
 //return response on json
 function BorrarAlumno($alumnoToDelete, $source)
 {
@@ -18,7 +18,7 @@ function BorrarAlumno($alumnoToDelete, $source)
       break;
 
     case "csv":
-
+      return BorrarAlumnoCsv($alumnoToDelete);
       break;
   }
 }
@@ -30,13 +30,11 @@ function BorrarAlumnoMySql($alumnoToDelete)
 
   if($success)
   {
-    $response = ReturnResponse::Response(AppConfig::$apiActions['delete'],
-      true, 706, $alumnoBefore);
+    $response = ReturnResponse::Response("delete", true, 706, $alumnoBefore);
   }
   else
   {
-    $response = ReturnResponse::Response(AppConfig::$apiActions['update'], 
-    false, 705, null);
+    $response = ReturnResponse::Response("delete", false, 705, null);
   }
   return $response;
 }
@@ -44,25 +42,31 @@ function BorrarAlumnoMySql($alumnoToDelete)
 function BorrarAlumnoJson($alumnoToDelete)
 {
   $alumnoToDelete = Alumno::StdToAlumno($alumnoToDelete);
-  $alumnos = AlumnoDaoFiles::GetAlumnos("json");
-  $alumnosCopy = $alumnos;
-  $deleted = false;
-  foreach($alumnos as $key => $alumno)
+
+  $deletedAlumno = DaoJson::Delete($alumnoToDelete);
+
+  if(is_null($deletedAlumno))
   {
-    $alumno = Alumno::StdToAlumno($alumno);
-    if($alumno->legajo === $alumnoToDelete->legajo)
-    {
-      unset($alumnosCopy[$key]); $deleted = true;
-      break;
-    }
+    $response = ReturnResponse::Response("update", false, 705, null);
   }
-  if($deleted)
+
+  $response = ReturnResponse::Response("update", true, 706, $deletedAlumno);
+
+  return $response;
+}
+
+function BorrarAlumnoCsv($alumnoToDelete)
+{
+  $alumnoToDelete = Alumno::StdToAlumno($alumnoToDelete);
+
+  $deletedAlumno = DaoCsv::Delete($alumnoToDelete);
+
+  if(is_null($deletedAlumno))
   {
-    AlumnoDaoFiles::SaveAlumnos($alumnosCopy, "json");
-    echo "alumno eliminado";
+    $response = ReturnResponse::Response("delete", false, 705, null);
   }
-  else
-  {
-    echo "alumno no eliminado";
-  }
+
+  $response = ReturnResponse::Response("delete", true, 706, $deletedAlumno);
+
+  return $response;
 }

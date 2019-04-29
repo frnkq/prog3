@@ -20,31 +20,15 @@ funciones -> modificar() hace lo pertinente -> usa dao(files) para get, guardar
 funciones -> borrar() hace lo pertinente -> usa dao(files) para get, borrar, guardar array
 funciones -> listar() hace lo pertinente -> usa dao(files) para get y formatea
 
-maxi gmaxn
+generalizar daos para que sean "object" y no "alumno"
 
-revisar todas las respuestas usar bools en los metodos y devolver mediante el index
 poder hacer un post para "modificarlafoto"
-base de datos en donweb
-GuardarAlumno() -> se le pasa un id = modificar
 dnied access on not index
 clase intermedia "negocio" que verifique
 dao->guardar
-verificador->guardar -> existe-> dao.guardar ->noexiste-> nada
-interfaz dao/verificador
 
 TODO JSON
 Todas las clases FromJson() ToJson()
-TJson todas
-Files DAO
-DB Dao
 SaveAlumno -> check if id exists // legajo exists // do some validations
 error validation on sql execution
 
-carga array
-(a/b/m)
-guarda array
------siempre
-
-guardar en tres formatos json, array json, o csv con "=>"
-(hacer estos tres parseos)
-atomizar mas
