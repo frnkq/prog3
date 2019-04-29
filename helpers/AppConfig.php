@@ -13,10 +13,10 @@ class AppConfig
   public static $resourcesDir = "resources";
 
   public static $db = array(
-    "host" => "localhost",
-    "username" => "root",
-    "password" => "frnkquito",
-    "dbname" => "utn_alumnos"
+    "host" => "{{}}",
+    "username" => "{{}}",
+    "password" => "{{}}",
+    "dbname" => "{{}}"
   );
 
   public static function GetReturnFormat()
