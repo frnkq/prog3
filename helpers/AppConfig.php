@@ -14,9 +14,9 @@ class AppConfig
 
   public static $db = array(
     "host" => "localhost",
-    "username" => "root",
-    "password" => "frnkquito",
-    "dbname" => "utn_alumnos"
+    "username" => "{{}}",
+    "password" => "{{}}",
+    "dbname" => "{{}}"
   );
 
   public static function GetReturnFormat()
