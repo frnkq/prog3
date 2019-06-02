@@ -21,6 +21,8 @@ $loginRoutes($app);
 
 
 $roleMiddleware = REQUIRE __dir__.'/middleware/RoleMiddleware.php';
-$app->add($roleMiddleware);
+//this middleware is under LoginRoutes getAll
+//$app->add($roleMiddleware);
+
 
 $app->run();

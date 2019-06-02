@@ -9,7 +9,7 @@ class Usuario
     public function GetAllUsers()
     {
         $pdo = PDOSingleton::GetPdo();
-        $query = "SELECT * FROM Usuarios";
+        $query = "SELECT * FROM usuarios";
         $result = $pdo->ReturnQuery($query);
         $result->execute();
         return $result->fetchAll(PDO::FETCH_CLASS, "Usuario");
@@ -18,7 +18,7 @@ class Usuario
     public function GetUserById($id)
     {
         $pdo = PDOSingleton::GetPdo();
-        $query = "SELECT * FROM Usuarios where id=$id";
+        $query = "SELECT * FROM usuarios where id=$id";
         $result = $pdo->ReturnQuery($query);
         $result->execute();
         $user = $result->fetchObject("Usuario");
@@ -28,7 +28,7 @@ class Usuario
     public function GetUserByUsernameAndPassowrd($username, $password)
     {
         $pdo = PDOSingleton::GetPdo();
-        $result = $pdo->ReturnQuery("SELECT * FROM Usuarios where username=:username and password=:password");
+        $result = $pdo->ReturnQuery("SELECT * FROM usuarios where username=:username and password=:password");
         $result->bindValue(':username', $username, PDO::PARAM_STR);
         $result->bindValue(':password', $password, PDO::PARAM_STR);
         $result->execute();
@@ -39,7 +39,7 @@ class Usuario
     public function Create($request, $response, $args)
     {
         $pdo = PDOSingleton::GetPdo();
-        $query = $pdo->ReturnQuery("INSERT INTO Usuarios(username, password) values (:username, :password)");
+        $query = $pdo->ReturnQuery("INSERT INTO usuarios(username, password) values (:username, :password)");
         $query->bindValue(':username', $this->username, PDO::PARAM_STR);
         $query->bindValue(':password', $this->password, PDO::PARAM_STR);
         $query->execute();
@@ -49,7 +49,7 @@ class Usuario
     public function Update($request, $response, $args)
     {
         $pdo = PDOSingleton::GetPdo();
-        $query = $pdo->ReturnQuery("UPDATE Usuarios SET username=:username, password=:password where id=:id");
+        $query = $pdo->ReturnQuery("UPDATE usuarios SET username=:username, password=:password where id=:id");
         $query->bindValue(":id", $this->id, PDO::PARAM_INT);
         $query->bindValue(":username", $this->username, PDO::PARAM_STR);
         $query->bindValue(":password", $this->password, PDO::PARAM_STR);
@@ -60,7 +60,7 @@ class Usuario
     public function UpdatePassword($newPassword)
     {
         $pdo = PDOSingleton::GetPdo();
-        $query = $pdo->ReturnQuery("UPDATE Usuarios SET password=:password where id=:id");
+        $query = $pdo->ReturnQuery("UPDATE usuarios SET password=:password where id=:id");
         $query->bindValue(":id", $this->id, PDO::PARAM_INT);
         $query->bindValue(":password", $newPassword, PDO::PARAM_STR);
 
@@ -70,7 +70,7 @@ class Usuario
     public function Delete($request, $response, $args)
     {
         $pdo = PDOSingleton::GetPdo();
-        $query = $pdo->ReturnQuery("DELETE FROM Usuarios where id=:id");
+        $query = $pdo->ReturnQuery("DELETE FROM usuarios where id=:id");
         $query->bindValue(":id", $this->id, PDO::PARAM_INT);
         return $query->execute();
     }

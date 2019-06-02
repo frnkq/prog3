@@ -10,9 +10,9 @@ class PDOSingleton
         try
         {
             $host = "localhost";
-            $dbname = "usuarios";
+            $dbname = "utn_usuarios";
             $username = "root";
-            $password = "";
+            $password = "frnkquito";
             $this->pdoObject = new PDO('mysql:host='.$host.';dbname='.$dbname.';charset=utf8', $username, $password, array(PDO::ATTR_EMULATE_PREPARES => false,PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
             $this->pdoObject->exec("SET CHARSET utf8");
         }
